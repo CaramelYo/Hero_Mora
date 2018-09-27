@@ -10,6 +10,10 @@ namespace Hero_Mora
     {
         static void Main(string[] args)
         {
+            Random r = new Random();
+            Weapon.r = r;
+            Character.r = r;
+
             while (true)
             {
                 Console.WriteLine("請輸入勇者的武器");
@@ -22,68 +26,52 @@ namespace Hero_Mora
                 if (input.Length == 0)
                 {
                     Console.WriteLine("goodbye");
-                    return;
+                    break;
                 }
-
-                Random r = new Random();
-                int weapon_temp;
-                try
-                {
-                    weapon_temp = int.Parse(input);
-                }
-                catch
-                {
-                    Console.WriteLine("輸入武器不是整數");
-                    continue;
-                }
-
-                if (weapon_temp == Weapon.weapon_count)
-                    weapon_temp = r.Next(0, Weapon.weapon_count);
-
-                Character c0 = new Character("All Might", 0, weapon_temp); ;
+                
+                // create a hero
+                Character c0 = new Character("All Might", 0, new Weapon(input)); ;
 
                 List<Bitmap> img_list = new List<Bitmap>();
                 img_list.Add(c0.Img);
                 img_list.Add(c0.Wp.Img);
 
-                int result = 0, win_count = 0;
-
                 Console.WriteLine("請輸入萌絲塔的武器");
                 input = Console.ReadLine();
-                try
-                {
-                    weapon_temp = int.Parse(input);
-                }
-                catch
-                {
-                    Console.WriteLine("輸入武器不是整數");
-                    continue;
-                }
-                
-                if (weapon_temp == Weapon.weapon_count)
-                    weapon_temp = r.Next(0, Weapon.weapon_count);
 
-                while (result != 1)
-                {
-                    Character c1 = new Character("monster", 1, weapon_temp);
-                    img_list.Add(c1.Wp.Img);
-                    img_list.Add(c1.Img);
+                Character c1 = new Character("monster", 1, new Weapon(input));
+                img_list.Add(c1.Wp.Img);
+                img_list.Add(c1.Img);
 
+                int result = 0, win_count = 0;
+
+                while (true)
+                {
                     // print c0 and c1
                     print_img_list(img_list);
 
                     // battle
-                    int c0_a = c0.attack(), c1_a = c1.attack();
-                    result = mora(c0_a, c1_a);
-                    Console.WriteLine(c0.Name + "出" + mora_symbol[c0_a] + " " + c1.Name + "出" + mora_symbol[c1_a]);
-                    Console.WriteLine(c0.Name + result_symbol[result]);
+                    do
+                    {
+                        int c0_a = c0.attack(), c1_a = c1.attack();
+                        result = mora(c0_a, c1_a);
+                        Console.WriteLine(c0.Name + "出" + mora_symbol[c0_a] + " " + c1.Name + "出" + mora_symbol[c1_a]);
+                        Console.WriteLine(c0.Name + result_symbol[result]);
+                    } while (result == 2);
 
                     if (result == 0)
+                    {
                         ++win_count;
 
-                    img_list.RemoveRange(2, 2);
-
-                    weapon_temp = r.Next(0, Weapon.weapon_count);
+                        // regenerate a monster
+                        img_list.RemoveRange(2, 2);
+                        
+                        c1 = new Character("monster", 1, new Weapon(r.Next(0, Weapon.weapon_count)));
+                        img_list.Add(c1.Wp.Img);
+                        img_list.Add(c1.Img);
+                    }
+                    else if (result == 1)
+                        break;
                 }
 
                 Console.WriteLine("\n" + c0.Name + "勝場數為 : " + win_count.ToString() + "\n");

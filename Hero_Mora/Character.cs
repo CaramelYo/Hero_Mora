@@ -8,13 +8,12 @@ namespace Hero_Mora
 {
     class Character
     {
-        public Character(string name, int img_num, int weapon_num)
+        public Character(string name, int img_num, Weapon wp)
         {
             this.name = name;
 
             img = new Bitmap(0, img_num);
-            wp = new Weapon(weapon_num);
-            r = new Random();
+            this.wp = wp;
         }
 
         public int attack()
@@ -40,8 +39,9 @@ namespace Hero_Mora
 
         Bitmap img;
         Weapon wp;
-        Random r;
 
         string name;
+        
+        public static Random r;
     }
 }

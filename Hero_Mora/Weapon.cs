@@ -10,9 +10,33 @@ namespace Hero_Mora
     {
         public Weapon(int weapon_num)
         {
-            img = new Bitmap(1, weapon_num);
+            init(weapon_num);
+        }
 
-            switch (weapon_num)
+        public Weapon(string s)
+        {
+            int t = -1;
+            try
+            {
+                t = int.Parse(s);
+            }
+            catch
+            {
+                Console.WriteLine("輸入武器不是整數，故武器隨機");
+                t = weapon_count;
+            }
+
+            if (t == weapon_count)
+                t = r.Next(0, weapon_count);
+
+            init(t);
+        }
+
+        void init(int num)
+        {
+            img = new Bitmap(1, num);
+
+            switch (num)
             {
                 case 0:
                     // sword => paper
@@ -47,8 +71,10 @@ namespace Hero_Mora
 
         int[] attack_mode;
 
+        public static Random r;
+
         //public static string[] weapon_symbol = new string[3] { "sword", "hammer", "spear" };
-        public static string[] weapon_symbol = new string[3] { "長劍", "大錘", "長毛" };
+        public static string[] weapon_symbol = new string[3] { "長劍", "大錘", "長矛" };
         public static int weapon_count = 3;
         public static int attack_mode_count = 5;
     }
